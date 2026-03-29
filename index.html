@@ -1932,13 +1932,40 @@ document.getElementById('candidates-grid').addEventListener('click', e => {
 
 // ═══ SHORTLIST ═══
 function toggleShortlist(id) {
-  if (state.shortlist.includes(id)) {
-    state.shortlist = state.shortlist.filter(s => s !== id);
-  } else {
+  const isAdding = !state.shortlist.includes(id);
+  if (isAdding) {
     state.shortlist.push(id);
+  } else {
+    state.shortlist = state.shortlist.filter(s => s !== id);
   }
   renderRanking();
   if (state.currentModal === id) updateModalShortlistBtn(id);
+
+  // Persiste no Supabase via n8n apenas ao adicionar
+  if (isAdding && !CONFIG.DEMO_MODE) {
+    const c = state.candidates.find(x => x.id === id);
+    if (c) {
+      fetch(CONFIG.SHORTLIST_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: state.sessionId,
+          job_id: state.jobId,
+          candidate_id: c.id,
+          candidate_name: c.name,
+          score: c.score,
+          current_role: c.current_role || '',
+          summary: c.summary || '',
+          highlights: c.highlights || c.match_reasons || [],
+          concerns: c.concerns || c.gaps || [],
+          hard_skills: c.hard_skills || [],
+          soft_skills: c.soft_skills || [],
+          outreach_angle: c.outreach_angle || '',
+          starred: state.stars[id] || 0
+        })
+      }).catch(err => console.warn('Shortlist webhook error:', err));
+    }
+  }
 }
 
 function toggleShortlistFromModal() {
