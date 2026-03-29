@@ -1780,8 +1780,12 @@ async function extractDocx(file) {
 }
 
 // ═══ ANALISAR ═══
+let _analyzingInProgress = false;
+
 async function analyzeProfiles() {
   if (!state.profiles.length) return;
+  if (_analyzingInProgress) return; // guard contra duplo disparo
+  _analyzingInProgress = true;
 
   document.getElementById('ranking-empty').classList.add('hidden');
   document.getElementById('candidates-grid').classList.add('hidden');
@@ -1823,12 +1827,14 @@ async function analyzeProfiles() {
     }
 
     clearInterval(loadTicker);
+    _analyzingInProgress = false;
     state.candidates = candidates.sort((a, b) => b.score - a.score);
     document.getElementById('loading-state').classList.add('hidden');
     renderRanking();
     document.getElementById('nav-step-3').disabled = false;
   } catch (e) {
     clearInterval(loadTicker);
+    _analyzingInProgress = false;
     document.getElementById('loading-state').classList.add('hidden');
     document.getElementById('btn-analyze').disabled = false;
     document.getElementById('ranking-empty').classList.remove('hidden');
