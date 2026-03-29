@@ -1335,13 +1335,43 @@ const CONFIG = {
   DEMO_MODE: false,
 };
 
+// ═══ PERSISTÊNCIA DE SESSÃO ═══
+const SESSION_KEY = 'andhiring_session';
+
+function saveSession() {
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      sessionId: state.sessionId,
+      jobId: state.jobId,
+      jobComplete: state.jobComplete,
+      extractedData: state.extractedData,
+      chatHistory: state.chatHistory,
+    }));
+  } catch (e) { /* silencioso */ }
+}
+
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+function clearSession() {
+  try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* silencioso */ }
+}
+
+// Recupera sessão anterior se existir
+const _saved = loadSession();
+
 // ═══ STATE ═══
 const state = {
-  sessionId: crypto.randomUUID(),
-  jobId: null,
-  jobComplete: false,
-  chatHistory: [],
-  extractedData: { title: '', hard_skills: [], soft_skills: [], requirements: [], persona: '' },
+  sessionId: _saved?.sessionId || crypto.randomUUID(),
+  jobId: _saved?.jobId || null,
+  jobComplete: _saved?.jobComplete || false,
+  chatHistory: _saved?.chatHistory || [],
+  extractedData: _saved?.extractedData || { title: '', hard_skills: [], soft_skills: [], requirements: [], persona: '' },
   profiles: [],     // { id, name, type, content, icon }
   candidates: [],   // scored candidates from backend
   shortlist: [],    // candidate ids in shortlist
@@ -1381,6 +1411,9 @@ function safeUrl(raw) {
 function goToView(name) {
   if (name === 'profiles' && !state.jobComplete) return;
   if (name === 'shortlist') renderShortlist();
+  if (name === 'job' && state.jobComplete) {
+    // Permite voltar à vaga sem limpar sessão
+  }
 
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
@@ -1434,6 +1467,7 @@ function sendMessage() {
       state.jobId = data.job_id;
       document.getElementById('btn-to-profiles').disabled = false;
       document.getElementById('nav-step-2').disabled = false;
+      saveSession();
     }
   })
   .catch(() => {
@@ -1548,6 +1582,8 @@ function updateExtractedPanel(data) {
   if (data.title) {
     epTitle.textContent = data.title;
     epTitle.classList.remove('empty');
+    state.extractedData = { ...state.extractedData, ...data };
+    saveSession();
   }
 
   const sections = [];
@@ -2294,6 +2330,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Foco inicial
   setTimeout(() => document.getElementById('chat-input').focus(), 400);
+
+  // Restaura sessão anterior se existir
+  if (state.jobComplete && state.jobId) {
+    document.getElementById('btn-to-profiles').disabled = false;
+    document.getElementById('nav-step-2').disabled = false;
+    if (state.extractedData?.title) {
+      updateExtractedPanel(state.extractedData);
+    }
+    // Mostra mensagem de sessão restaurada
+    appendMsg('ai', 'Sessão anterior restaurada. Você pode continuar para análise de candidatos ou definir uma nova vaga.');
+  }
 });
 </script>
 </body>
