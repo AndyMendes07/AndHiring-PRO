@@ -403,10 +403,6 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
         <p>Descreva a posição. Vou identificar requisitos, competências e o perfil ideal.</p>
       </div>
       <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
-        <div class="msg ai">
-          <div class="msg-avatar ai">AI</div>
-          <div class="msg-bubble">Olá! Sou seu triador senior de candidatos.<br><br>Cole a descrição da vaga ou me conte sobre a posição que você precisa preencher. Posso trabalhar com JD completo, um briefing rápido ou qualquer formato — vou fazer as perguntas certas para montar o perfil ideal.</div>
-        </div>
       </div>
       <div class="chat-input-area">
         <div class="chat-input-wrap">
@@ -597,11 +593,34 @@ function showLogin() {
   document.getElementById('app').classList.remove('active');
 }
 
+function getFirstName(user) {
+  if (!user) return '';
+  const full = user.user_metadata?.full_name || user.user_metadata?.name || '';
+  if (full) return full.split(' ')[0];
+  const email = user.email || '';
+  return email.split('@')[0].split('.')[0].replace(/[^a-zA-Z]/g,'') || '';
+}
+
+function renderInitialMessage() {
+  const name = getFirstName(currentUser);
+  const greeting = name ? `Olá, ${name}!` : 'Olá!';
+  const text = `${greeting} Sou o AndHiring — vou te ajudar a triar os candidatos mais aderentes com IA.\n\nPara montar o ranking, preencha os dados da vaga:\n\n• Cargo:\n• Senioridade: (júnior / pleno / sênior / especialista / gerente / diretor)\n• Localidade:\n• Modelo: (presencial / híbrido / remoto)\n• Hard Skills exigidas:\n• Soft Skills desejadas:\n• Requisitos eliminatórios:\n• Formação desejada:\n\nOu cole a descrição completa da vaga e extraio tudo automaticamente.`;
+  const container = document.getElementById('chat-messages');
+  container.innerHTML = '';
+  const el = document.createElement('div'); el.className = 'msg ai';
+  const av = document.createElement('div'); av.className = 'msg-avatar ai'; av.textContent = 'AI';
+  const bubble = document.createElement('div'); bubble.className = 'msg-bubble';
+  bubble.innerHTML = escapeHTML(text).replace(/\n/g,'<br>');
+  el.appendChild(av); el.appendChild(bubble);
+  container.appendChild(el);
+}
+
 function showApp() {
   document.getElementById('view-login').classList.remove('active');
   document.getElementById('app').classList.add('active');
   document.getElementById('nav-user-email').textContent = currentUser?.email || '—';
   updateFixedNav('job');
+  renderInitialMessage();
   restoreSessionIfExists();
 }
 
@@ -739,7 +758,7 @@ function sendMessage() {
   showTyping();
   fetch(CONFIG.JOB_CHAT_WEBHOOK, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ session_id: state.sessionId, message: text, client_id: currentUser?.id || null }),
+    body: JSON.stringify({ session_id: state.sessionId, message: text, client_id: currentUser?.id || null, user_name: getFirstName(currentUser) }),
   })
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(data => {
@@ -1214,9 +1233,8 @@ function startNovaVaga(){
   document.getElementById('btn-fixed-advance-profiles').disabled=true;
   updateFixedNav('job');
   const epTitle=document.getElementById('ep-title'); epTitle.textContent='Aguardando análise...'; epTitle.classList.add('empty'); document.getElementById('ep-body').innerHTML='';
-  const container=document.getElementById('chat-messages'); container.innerHTML='';
-  const initMsg=document.createElement('div'); initMsg.className='msg ai'; initMsg.innerHTML='<div class="msg-avatar ai">AI</div><div class="msg-bubble">Pronto para uma nova vaga! Cole a descrição ou me conte sobre a posição.</div>';
-  container.appendChild(initMsg); document.getElementById('chat-input').focus();
+  renderInitialMessage();
+  document.getElementById('chat-input').focus();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
