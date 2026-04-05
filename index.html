@@ -85,8 +85,8 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .view.active { display: flex; flex-direction: column; }
 
 /* ═══ VIEW 1: JOB CHAT ═══ */
-#view-job { flex-direction: row; height: 100vh; }
-.chat-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); max-width: 620px; min-width: 0; }
+#view-job { flex-direction: row; height: 100vh; justify-content: center; }
+.chat-panel { flex: 1; display: flex; flex-direction: column; border-right: 1px solid var(--border); max-width: 760px; min-width: 0; }
 .chat-header { padding: 24px 28px 20px; border-bottom: 1px solid var(--border); }
 .chat-header h1 { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
 .chat-header p { color: var(--text-muted); font-size: 0.875rem; }
@@ -119,23 +119,44 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .btn-send svg { width: 16px; height: 16px; }
 
 /* EXTRACTED PANEL */
-.extracted-panel { width: 380px; flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden; }
+.extracted-panel { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; overflow: hidden; }
 .ep-header { padding: 24px 24px 20px; border-bottom: 1px solid var(--border); }
 .ep-header h2 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 2px; }
 .ep-title { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; min-height: 1.4em; }
 .ep-title.empty { color: var(--text-subtle); font-style: italic; }
-.ep-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; }
+.ep-body { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
 .ep-section-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px; }
 .ep-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .ep-tag { padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 500; border: 1px solid var(--border); color: var(--text-muted); }
 .ep-tag.hard { border-color: var(--accent-glow); color: var(--accent); background: var(--accent-dim); }
 .ep-tag.soft { border-color: rgba(52,211,153,0.3); color: var(--emerald); background: var(--emerald-dim); }
+.ep-tag.red { border-color: rgba(248,113,113,0.3); color: var(--red); background: var(--red-dim); }
 .ep-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; height: 100%; padding: 40px; text-align: center; }
 .ep-empty-icon { font-size: 2rem; opacity: 0.3; }
 .ep-empty p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; }
-.btn-next-view { margin: 16px 24px 24px; padding: 13px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s, transform 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-next-view:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
-.btn-next-view:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* EP CARDS */
+.ep-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+.ep-card-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px; }
+.ep-meta-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.ep-meta-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--border); color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px; }
+
+/* FIXED ADVANCE BUTTON */
+.btn-advance-fixed { position: fixed; bottom: 28px; right: 28px; z-index: 90; padding: 13px 22px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(124,106,245,0.35); }
+.btn-advance-fixed:hover:not(:disabled) { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124,106,245,0.45); }
+.btn-advance-fixed:disabled { opacity: 0.25; cursor: not-allowed; box-shadow: none; transform: none; }
+
+/* BACK NAV BUTTON */
+.btn-back-nav { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.btn-back-nav:hover { border-color: var(--accent); color: var(--accent); }
+
+/* RECRUITER GUIDANCE */
+.recruiter-guidance-box { display: flex; flex-direction: column; gap: 8px; }
+.recruiter-question { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: var(--radius-sm); font-size: 0.85rem; line-height: 1.55; color: var(--text); }
+.recruiter-q-num { font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--amber); font-weight: 600; flex-shrink: 0; padding-top: 2px; }
+
+/* keep for compat */
+.btn-next-view { display: none; }
 
 /* ═══ VIEW 2: PROFILES ═══ */
 #view-profiles { flex-direction: column; }
@@ -290,6 +311,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
   .shortlist-header { padding: 20px 16px 0; }
   .shortlist-toolbar { padding: 12px 16px; }
   .comparison-table { padding: 0 16px 24px; }
+  .btn-advance-fixed { bottom: 16px; right: 16px; padding: 11px 18px; font-size: 0.82rem; }
 }
 @media (max-width: 480px) {
   .step-btn span:not(.step-num) { display: none; }
@@ -332,7 +354,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
       </button>
     </div>
     <div class="nav-right">
-      <span class="nav-badge">v3.3</span>
+      <span class="nav-badge">v3.4</span>
       <div class="nav-user">
         <span class="nav-user-email" id="nav-user-email">—</span>
         <button class="btn-logout" onclick="logout()">Sair</button>
@@ -378,13 +400,17 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
       </button>
     </aside>
   </main>
+  <button class="btn-advance-fixed" id="btn-to-profiles-fixed" disabled onclick="goToView('profiles')" title="Avançar para Perfis">
+    Avançar para Perfis →
+  </button>
 
   <!-- VIEW 2 -->
   <div id="view-profiles" class="view">
     <div class="profiles-layout">
       <aside class="upload-sidebar">
         <div>
-          <h2>Inserir Candidatos</h2>
+          <button class="btn-back-nav" onclick="goToView('job')">← Voltar à Vaga</button>
+          <h2 style="margin-top:14px">Inserir Candidatos</h2>
           <p>Adicione perfis por link do LinkedIn, CV em PDF/Word, ou cole a transcrição de uma entrevista.</p>
         </div>
         <div class="input-tabs">
@@ -598,6 +624,7 @@ function restoreSessionIfExists() {
   state.extractedData = saved.extractedData || state.extractedData;
   if (state.jobComplete && state.jobId) {
     document.getElementById('btn-to-profiles').disabled = false;
+    document.getElementById('btn-to-profiles-fixed').disabled = false;
     document.getElementById('nav-step-2').disabled = false;
     if (state.extractedData?.title) updateExtractedPanel(state.extractedData);
     const banner = document.createElement('div');
@@ -664,6 +691,7 @@ function sendMessage() {
     if (data.complete) {
       state.jobComplete = true; state.jobId = data.job_id;
       document.getElementById('btn-to-profiles').disabled = false;
+      document.getElementById('btn-to-profiles-fixed').disabled = false;
       document.getElementById('nav-step-2').disabled = false;
       saveSession();
     }
@@ -697,20 +725,63 @@ function updateExtractedPanel(data) {
   const epTitle = document.getElementById('ep-title');
   const epBody = document.getElementById('ep-body');
   if (data.title) { epTitle.textContent = data.title; epTitle.classList.remove('empty'); state.extractedData = { ...state.extractedData, ...data }; saveSession(); }
-  const sections = [];
-  if (data.requirements?.length) sections.push({ label: 'Requisitos', items: data.requirements, cls: '' });
-  if (data.hard_skills?.length) sections.push({ label: 'Hard Skills', items: data.hard_skills, cls: 'hard' });
-  if (data.soft_skills?.length) sections.push({ label: 'Soft Skills', items: data.soft_skills, cls: 'soft' });
-  if (!sections.length) return;
+
   const frag = document.createDocumentFragment();
-  sections.forEach(({ label, items, cls }) => {
-    const sec = document.createElement('div');
-    const lbl = document.createElement('div'); lbl.className = 'ep-section-label'; lbl.textContent = label;
-    const tags = document.createElement('div'); tags.className = 'ep-tags';
-    items.forEach(item => { const span = document.createElement('span'); span.className = 'ep-tag' + (cls ? ' '+cls : ''); span.textContent = item; tags.appendChild(span); });
-    sec.appendChild(lbl); sec.appendChild(tags); frag.appendChild(sec);
-  });
-  epBody.innerHTML = ''; epBody.appendChild(frag);
+
+  // Contexto card
+  const metaItems = [];
+  if (data.seniority) metaItems.push(['👤', data.seniority]);
+  if (data.location) metaItems.push(['📍', data.location]);
+  if (data.work_model) metaItems.push(['🏢', data.work_model]);
+  if (metaItems.length) {
+    const card = makeEpCard('Contexto da Vaga');
+    const row = document.createElement('div'); row.className = 'ep-meta-row';
+    metaItems.forEach(([icon, text]) => {
+      const badge = document.createElement('span'); badge.className = 'ep-meta-badge';
+      const ic = document.createElement('span'); ic.textContent = icon;
+      badge.appendChild(ic); badge.appendChild(document.createTextNode(' ' + text));
+      row.appendChild(badge);
+    });
+    card.appendChild(row); frag.appendChild(card);
+  }
+
+  // Must-haves card
+  if (data.must_haves?.length) {
+    const card = makeEpCard('🚫 Eliminatórios');
+    card.appendChild(makeTagRow(data.must_haves, 'red')); frag.appendChild(card);
+  }
+
+  // Hard skills card
+  if (data.hard_skills?.length) {
+    const card = makeEpCard('⚙️ Hard Skills');
+    card.appendChild(makeTagRow(data.hard_skills, 'hard')); frag.appendChild(card);
+  }
+
+  // Soft skills card
+  if (data.soft_skills?.length) {
+    const card = makeEpCard('💬 Soft Skills');
+    card.appendChild(makeTagRow(data.soft_skills, 'soft')); frag.appendChild(card);
+  }
+
+  // Requirements card
+  if (data.requirements?.length) {
+    const card = makeEpCard('📋 Requisitos Gerais');
+    card.appendChild(makeTagRow(data.requirements, '')); frag.appendChild(card);
+  }
+
+  if (frag.childNodes.length) { epBody.innerHTML = ''; epBody.appendChild(frag); }
+}
+
+function makeEpCard(title) {
+  const card = document.createElement('div'); card.className = 'ep-card';
+  const lbl = document.createElement('div'); lbl.className = 'ep-card-title'; lbl.textContent = title;
+  card.appendChild(lbl); return card;
+}
+
+function makeTagRow(items, cls) {
+  const tags = document.createElement('div'); tags.className = 'ep-tags';
+  items.forEach(item => { const span = document.createElement('span'); span.className = 'ep-tag' + (cls ? ' '+cls : ''); span.textContent = item; tags.appendChild(span); });
+  return tags;
 }
 
 function switchTab(name) {
@@ -886,6 +957,17 @@ function openModal(id) {
   clusters.appendChild(buildSkillCluster('Hard Skills',c.hard_skills||[],'has')); clusters.appendChild(buildSkillCluster('Soft Skills',c.soft_skills||[],'soft'));
   skillsSec.appendChild(clusters); body.appendChild(skillsSec);
   if(c.outreach_angle){const os=buildSection('💬 Ângulo de Abordagem');const ob=document.createElement('div');ob.className='outreach-box';ob.textContent='"'+c.outreach_angle+'"';os.appendChild(ob);body.appendChild(os);}
+  if(c.recruiter_guidance && c.recruiter_guidance.length){
+    const rgSec=buildSection('🎯 Guia do Recrutador — Perguntas para Entrevista');
+    const rgBox=document.createElement('div');rgBox.className='recruiter-guidance-box';
+    c.recruiter_guidance.forEach((q,i)=>{
+      const qItem=document.createElement('div');qItem.className='recruiter-question';
+      const num=document.createElement('span');num.className='recruiter-q-num';num.textContent=(i+1)+'.';
+      const txt=document.createElement('span');txt.textContent=q;
+      qItem.appendChild(num);qItem.appendChild(txt);rgBox.appendChild(qItem);
+    });
+    rgSec.appendChild(rgBox);body.appendChild(rgSec);
+  }
   updateModalShortlistBtn(id); document.getElementById('modal-overlay').classList.add('open');
 }
 function buildSection(title){const div=document.createElement('div');const t=document.createElement('div');t.className='modal-section-title';t.textContent=title;div.appendChild(t);return div;}
@@ -919,7 +1001,7 @@ function setStar(id,n){state.stars[id]=state.stars[id]===n?0:n;renderShortlist()
 
 function startNovaVaga(){
   clearSession(); state.sessionId=crypto.randomUUID(); state.jobId=null; state.jobComplete=false; state.chatHistory=[]; state.extractedData={title:'',hard_skills:[],soft_skills:[],requirements:[]}; state.profiles=[]; state.candidates=[]; state.shortlist=[]; state.stars={}; state.currentModal=null;
-  document.getElementById('btn-to-profiles').disabled=true; document.getElementById('nav-step-2').disabled=true; document.getElementById('nav-step-3').disabled=true;
+  document.getElementById('btn-to-profiles').disabled=true; document.getElementById('btn-to-profiles-fixed').disabled=true; document.getElementById('nav-step-2').disabled=true; document.getElementById('nav-step-3').disabled=true;
   const epTitle=document.getElementById('ep-title'); epTitle.textContent='Aguardando análise...'; epTitle.classList.add('empty'); document.getElementById('ep-body').innerHTML='';
   const container=document.getElementById('chat-messages'); container.innerHTML='';
   const initMsg=document.createElement('div'); initMsg.className='msg ai'; initMsg.innerHTML='<div class="msg-avatar ai">AI</div><div class="msg-bubble">Pronto para uma nova vaga! Cole a descrição ou me conte sobre a posição.</div>';
