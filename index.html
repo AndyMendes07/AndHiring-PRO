@@ -142,21 +142,30 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
 .ep-meta-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .ep-meta-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--border); color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px; }
 
-/* FIXED NAVIGATION BUTTONS */
-.btn-fixed-nav { position: fixed; bottom: 28px; z-index: 90; padding: 13px 22px; border: none; border-radius: var(--radius); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; display: none; align-items: center; gap: 8px; }
-.btn-fixed-nav.visible { display: flex; }
-.btn-fixed-nav:disabled { opacity: 0.25; cursor: not-allowed; box-shadow: none; transform: none; }
-.btn-fixed-nav.right { right: 28px; background: var(--accent); color: #fff; box-shadow: 0 8px 24px rgba(124,106,245,0.35); }
-.btn-fixed-nav.right:hover:not(:disabled) { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124,106,245,0.45); }
-.btn-fixed-nav.left { left: 28px; background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
-.btn-fixed-nav.left:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+/* FIXED NAVIGATION BUTTONS — single unified style */
+.btn-fixed { position: fixed; z-index: 90; padding: 13px 24px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(124,106,245,0.35); display: none; }
+.btn-fixed.visible { display: flex; }
+.btn-fixed:hover:not(:disabled) { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124,106,245,0.45); }
+.btn-fixed:disabled { opacity: 0.28; cursor: not-allowed; box-shadow: none; transform: none; }
+.btn-fixed.bottom-right { bottom: 28px; right: 28px; }
+.btn-fixed.bottom-center { bottom: 28px; left: 50%; transform: translateX(-50%); }
+.btn-fixed.bottom-center:hover:not(:disabled) { transform: translateX(-50%) translateY(-2px); }
 
-/* BACK NAV BUTTON (inline) */
-.btn-back-nav { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-.btn-back-nav:hover { border-color: var(--accent); color: var(--accent); }
+/* INLINE TOP-RIGHT NAV (same purple style but inside header) */
+.btn-nav-top { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s; box-shadow: 0 8px 24px rgba(124,106,245,0.3); }
+.btn-nav-top:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 12px 32px rgba(124,106,245,0.42); }
 
+/* BACK NAV BUTTON (inline sidebar - keep for compat) */
+.btn-back-nav { display: none; }
 /* keep for compat */
+.btn-next-view { display: none; }
 .btn-advance-fixed { display: none; }
+.btn-fixed-nav { display: none; }
+
+@media (max-width: 768px) {
+  .btn-fixed.bottom-right { bottom: 16px; right: 16px; padding: 11px 18px; font-size: 0.82rem; }
+  .btn-fixed.bottom-center { bottom: 16px; padding: 11px 18px; font-size: 0.82rem; }
+}
 
 /* RECRUITER GUIDANCE */
 .recruiter-guidance-box { display: flex; flex-direction: column; gap: 8px; }
@@ -425,17 +434,20 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
     </aside>
   </main>
 
-  <!-- FIXED NAV BUTTONS (controlled by goToView) -->
-  <button class="btn-fixed-nav right" id="btn-fixed-right" disabled onclick="handleFixedRight()"></button>
-  <button class="btn-fixed-nav left" id="btn-fixed-left" onclick="handleFixedLeft()"></button>
+  <!-- FIXED BUTTONS — one per view, controlled by goToView -->
+  <!-- View 1: advance to profiles -->
+  <button class="btn-fixed bottom-right" id="btn-fixed-advance-profiles" disabled onclick="goToView('profiles')">Avançar para Perfis →</button>
+  <!-- View 2: advance to shortlist -->
+  <button class="btn-fixed bottom-right" id="btn-fixed-advance-shortlist" onclick="goToView('shortlist')">Avançar para Shortlist →</button>
+  <!-- View 3: export PDF centered -->
+  <button class="btn-fixed bottom-center" id="btn-fixed-export-pdf" onclick="exportPDF()">⬇ Exportar Relatório PDF</button>
 
   <!-- VIEW 2 -->
   <div id="view-profiles" class="view">
     <div class="profiles-layout">
       <aside class="upload-sidebar">
         <div>
-          <button class="btn-back-nav" onclick="goToView('job')">← Voltar à Vaga</button>
-          <h2 style="margin-top:14px">Inserir Candidatos</h2>
+          <h2>Inserir Candidatos</h2>
           <p>Adicione perfis por link do LinkedIn, CV em PDF/Word, ou cole a transcrição de uma entrevista.</p>
         </div>
         <div class="input-tabs">
@@ -471,6 +483,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
         <div class="ranking-header">
           <h2>Ranking de Aderência</h2>
           <span class="ranking-count" id="ranking-count"></span>
+          <button class="btn-nav-top" onclick="goToView('job')" style="margin-left:auto">← Voltar à Vaga</button>
         </div>
         <div class="ranking-empty" id="ranking-empty">
           <div class="ranking-empty-icon">🏆</div>
@@ -493,11 +506,10 @@ body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta San
         <h1>Shortlist <em>&</em> Decisão</h1>
         <p>Compare os finalistas lado a lado e marque quem avança no processo.</p>
       </div>
-      <button class="btn-view-profiles" onclick="goToView('profiles')">← Voltar aos perfis</button>
+      <button class="btn-nav-top" onclick="goToView('profiles')">← Voltar aos Perfis</button>
     </div>
     <div class="shortlist-toolbar">
       <span style="font-size:0.8rem;color:var(--text-muted)" id="sl-count"></span>
-      <button class="btn-export-pdf" onclick="exportPDF()" style="margin-left:auto">⬇ Exportar Relatório PDF</button>
     </div>
     <div class="shortlist-empty" id="shortlist-empty">
       <div class="ranking-empty-icon">⭐</div>
@@ -651,6 +663,7 @@ function restoreSessionIfExists() {
   state.extractedData = saved.extractedData || state.extractedData;
   if (state.jobComplete && state.jobId) {
     document.getElementById('btn-to-profiles').disabled = false;
+    document.getElementById('btn-fixed-advance-profiles').disabled = false;
     document.getElementById('nav-step-2').disabled = false;
     if (state.extractedData?.title) updateExtractedPanel(state.extractedData);
     const banner = document.createElement('div');
@@ -696,32 +709,23 @@ function goToView(name) {
 }
 
 function updateFixedNav(view) {
-  const right = document.getElementById('btn-fixed-right');
-  const left  = document.getElementById('btn-fixed-left');
-  // reset
-  right.classList.remove('visible'); left.classList.remove('visible');
+  const advProfiles  = document.getElementById('btn-fixed-advance-profiles');
+  const advShortlist = document.getElementById('btn-fixed-advance-shortlist');
+  const exportPDFBtn = document.getElementById('btn-fixed-export-pdf');
+
+  // hide all
+  advProfiles.classList.remove('visible');
+  advShortlist.classList.remove('visible');
+  exportPDFBtn.classList.remove('visible');
 
   if (view === 'job') {
-    right.textContent = 'Avançar para Perfis →';
-    right.disabled = !state.jobComplete;
-    right.classList.add('visible');
+    advProfiles.disabled = !state.jobComplete;
+    advProfiles.classList.add('visible');
   } else if (view === 'profiles') {
-    left.textContent = '← Definição de Vaga';
-    left.classList.add('visible');
+    advShortlist.classList.add('visible');
   } else if (view === 'shortlist') {
-    left.textContent = '← Voltar aos Perfis';
-    left.classList.add('visible');
+    exportPDFBtn.classList.add('visible');
   }
-}
-
-function handleFixedRight() {
-  const view = document.querySelector('.view.active')?.id?.replace('view-','');
-  if (view === 'job') goToView('profiles');
-}
-function handleFixedLeft() {
-  const view = document.querySelector('.view.active')?.id?.replace('view-','');
-  if (view === 'profiles') goToView('job');
-  else if (view === 'shortlist') goToView('profiles');
 }
 
 // ═══ CHAT ═══
@@ -748,7 +752,7 @@ function sendMessage() {
       state.jobComplete = true; state.jobId = data.job_id;
       document.getElementById('btn-to-profiles').disabled = false;
       document.getElementById('nav-step-2').disabled = false;
-      updateFixedNav('job');
+      document.getElementById('btn-fixed-advance-profiles').disabled = false;
       saveSession();
     }
   })
@@ -926,7 +930,9 @@ async function analyzeProfiles() {
     clearInterval(ticker); _analyzingInProgress=false;
     state.candidates = data.candidates.sort((a,b) => b.score-a.score);
     document.getElementById('loading-state').classList.add('hidden');
-    renderRanking(); document.getElementById('nav-step-3').disabled=false;
+    renderRanking();
+    document.getElementById('nav-step-3').disabled=false;
+    updateFixedNav('profiles');
   } catch(e) {
     clearInterval(ticker); _analyzingInProgress=false;
     document.getElementById('loading-state').classList.add('hidden');
@@ -1205,6 +1211,7 @@ function exportPDF() {
 function startNovaVaga(){
   clearSession(); state.sessionId=crypto.randomUUID(); state.jobId=null; state.jobComplete=false; state.chatHistory=[]; state.extractedData={title:'',hard_skills:[],soft_skills:[],requirements:[]}; state.profiles=[]; state.candidates=[]; state.shortlist=[]; state.stars={}; state.currentModal=null;
   document.getElementById('btn-to-profiles').disabled=true; document.getElementById('nav-step-2').disabled=true; document.getElementById('nav-step-3').disabled=true;
+  document.getElementById('btn-fixed-advance-profiles').disabled=true;
   updateFixedNav('job');
   const epTitle=document.getElementById('ep-title'); epTitle.textContent='Aguardando análise...'; epTitle.classList.add('empty'); document.getElementById('ep-body').innerHTML='';
   const container=document.getElementById('chat-messages'); container.innerHTML='';
